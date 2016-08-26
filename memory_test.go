@@ -1,4 +1,4 @@
-package main
+package rinqueue
 
 import (
 	"math"
@@ -15,22 +15,22 @@ func benchmarkMemory(b *testing.B, q intqueue) {
 	b.N = 30000000
 
 	for i := 0; i < b.N; i++ {
-		q.add(i)
+		q.Add(i)
 	}
 
 	for i := 0; i < b.N; i++ {
-		q.remove()
+		q.Remove()
 	}
 
 	b.Logf(memory())
 }
 
 func BenchmarkSliceMemory(b *testing.B) {
-	benchmarkMemory(b, newslicequeue())
+	benchmarkMemory(b, NewSlicequeue())
 }
 
 func BenchmarkRingMemory(b *testing.B) {
-	benchmarkMemory(b, newringqueue())
+	benchmarkMemory(b, NewRingqueue())
 }
 
 func memory() string {

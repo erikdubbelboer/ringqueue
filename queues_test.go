@@ -1,30 +1,30 @@
-package main
+package rinqueue
 
 import (
 	"testing"
 )
 
 type intqueue interface {
-	add(int)
-	remove() (int, bool)
-	len() int
-	cap() int
+	Add(interface{})
+	Remove() (interface{}, bool)
+	Len() int
+	Cap() int
 }
 
 func testqueue(t *testing.T, q intqueue) {
 	for j := 0; j < 100; j++ {
-		if q.len() != 0 {
+		if q.Len() != 0 {
 			t.Fatal("expected no elements")
-		} else if _, ok := q.remove(); ok {
+		} else if _, ok := q.Remove(); ok {
 			t.Fatal("expected no elements")
 		}
 
 		for i := 0; i < j; i++ {
-			q.add(i)
+			q.Add(i)
 		}
 
 		for i := 0; i < j; i++ {
-			if x, ok := q.remove(); !ok {
+			if x, ok := q.Remove(); !ok {
 				t.Fatal("expected an element")
 			} else if x != i {
 				t.Fatalf("expected %d got %d", i, x)
@@ -36,12 +36,12 @@ func testqueue(t *testing.T, q intqueue) {
 	r := 0
 	for j := 0; j < 100; j++ {
 		for i := 0; i < 4; i++ {
-			q.add(a)
+			q.Add(a)
 			a++
 		}
 
 		for i := 0; i < 2; i++ {
-			if x, ok := q.remove(); !ok {
+			if x, ok := q.Remove(); !ok {
 				t.Fatal("expected an element")
 			} else if x != r {
 				t.Fatalf("expected %d got %d", r, x)
@@ -50,51 +50,51 @@ func testqueue(t *testing.T, q intqueue) {
 		}
 	}
 
-	if q.len() != 200 {
-		t.Fatalf("expected 200 elements have %d", q.len())
+	if q.Len() != 200 {
+		t.Fatalf("expected 200 elements have %d", q.Len())
 	}
 }
 
 func TestSlicequeue(t *testing.T) {
-	testqueue(t, newslicequeue())
+	testqueue(t, NewSlicequeue())
 }
 
 func TestRingqueue(t *testing.T) {
-	testqueue(t, newringqueue())
+	testqueue(t, NewRingqueue())
 }
 
 func benchmarkAdd(b *testing.B, q intqueue) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		q.add(i)
+		q.Add(i)
 	}
 }
 
 func BenchmarkSliceAdd(b *testing.B) {
-	benchmarkAdd(b, newslicequeue())
+	benchmarkAdd(b, NewSlicequeue())
 }
 
 func BenchmarkRingAdd(b *testing.B) {
-	benchmarkAdd(b, newringqueue())
+	benchmarkAdd(b, NewRingqueue())
 }
 
 func benchmarkRemove(b *testing.B, q intqueue) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		q.add(i)
+		q.Add(i)
 
-		if q.len() > 10 {
-			q.remove()
+		if q.Len() > 10 {
+			q.Remove()
 		}
 	}
 }
 
 func BenchmarkSliceRemove(b *testing.B) {
-	benchmarkRemove(b, newslicequeue())
+	benchmarkRemove(b, NewSlicequeue())
 }
 
 func BenchmarkRingRemove(b *testing.B) {
-	benchmarkRemove(b, newringqueue())
+	benchmarkRemove(b, NewRingqueue())
 }
