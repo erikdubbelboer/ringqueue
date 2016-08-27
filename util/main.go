@@ -4,25 +4,27 @@ import (
 	"fmt"
 	"runtime"
 	"time"
+
+	rq "github.com/ErikDubbelboer/ringqueue"
 )
 
 func main() {
 	t := time.Tick(time.Second)
-	q := newringqueue()
-	//q := newslicequeue()
+	//q := rq.NewRingqueue()
+	q := rq.NewSlicequeue()
 
 	for i := 1; i > 0; i++ {
-		q.add(i)
+		q.Add(i)
 
-		if q.len() > 10 {
-			q.remove()
+		if q.Len() > 10 {
+			q.Remove()
 		}
 
 		select {
 		case <-t:
 			var m runtime.MemStats
 			runtime.ReadMemStats(&m)
-			fmt.Printf("cap: %d, len: %d, used: %d\n", q.cap(), q.len(), m.Alloc)
+			fmt.Printf("cap: %d, len: %d, used: %d\n", q.Cap(), q.Len(), m.Alloc)
 		default:
 		}
 	}

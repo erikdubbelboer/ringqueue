@@ -1,17 +1,17 @@
-package main
+package rinqueue
 
-type slicequeue []int
+type Slicequeue []interface{}
 
-func newslicequeue() *slicequeue {
-	q := make(slicequeue, 0)
+func NewSlicequeue() *Slicequeue {
+	q := make(Slicequeue, 0)
 	return &q
 }
 
-func (q *slicequeue) add(i int) {
+func (q *Slicequeue) Add(i interface{}) {
 	*q = append(*q, i)
 }
 
-func (q *slicequeue) remove() (int, bool) {
+func (q *Slicequeue) Remove() (interface{}, bool) {
 	if len(*q) == 0 {
 		return 0, false
 	} else {
@@ -19,7 +19,7 @@ func (q *slicequeue) remove() (int, bool) {
 		*q = (*q)[1:]
 
 		if n := cap(*q) / 2; len(*q) <= n {
-			nodes := make([]int, len(*q), n)
+			nodes := make([]interface{}, len(*q), n)
 			copy(nodes, *q)
 			*q = nodes
 		}
@@ -28,10 +28,10 @@ func (q *slicequeue) remove() (int, bool) {
 	}
 }
 
-func (q *slicequeue) cap() int {
+func (q *Slicequeue) Cap() int {
 	return cap(*q)
 }
 
-func (q *slicequeue) len() int {
+func (q *Slicequeue) Len() int {
 	return len(*q)
 }

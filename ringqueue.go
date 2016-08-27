@@ -1,20 +1,20 @@
-package main
+package rinqueue
 
-type ringqueue struct {
-	nodes []int
+type Ringqueue struct {
+	nodes []interface{}
 	head  int
 	tail  int
 	cnt   int
 }
 
-func newringqueue() *ringqueue {
-	return &ringqueue{
-		nodes: make([]int, 2),
+func NewRingqueue() *Ringqueue {
+	return &Ringqueue{
+		nodes: make([]interface{}, 2),
 	}
 }
 
-func (q *ringqueue) resize(n int) {
-	nodes := make([]int, n)
+func (q *Ringqueue) resize(n int) {
+	nodes := make([]interface{}, n)
 	if q.head < q.tail {
 		copy(nodes, q.nodes[q.head:q.tail])
 	} else {
@@ -27,7 +27,7 @@ func (q *ringqueue) resize(n int) {
 	q.nodes = nodes
 }
 
-func (q *ringqueue) add(i int) {
+func (q *Ringqueue) Add(i interface{}) {
 	if q.cnt == len(q.nodes) {
 		// Also tested a grow rate of 1.5, see: http://stackoverflow.com/questions/2269063/buffer-growth-strategy
 		// In Go this resulted in a higher memory usage.
@@ -38,7 +38,7 @@ func (q *ringqueue) add(i int) {
 	q.cnt++
 }
 
-func (q *ringqueue) remove() (int, bool) {
+func (q *Ringqueue) Remove() (interface{}, bool) {
 	if q.cnt == 0 {
 		return 0, false
 	}
@@ -53,10 +53,10 @@ func (q *ringqueue) remove() (int, bool) {
 	return i, true
 }
 
-func (q *ringqueue) cap() int {
+func (q *Ringqueue) Cap() int {
 	return cap(q.nodes)
 }
 
-func (q *ringqueue) len() int {
+func (q *Ringqueue) Len() int {
 	return q.cnt
 }
